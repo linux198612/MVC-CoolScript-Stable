@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coolscript MVC Framework Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h1 class="mb-4">
+        Coolscript MVC Framework Documentation
+        <span class="badge bg-secondary align-top" style="font-size:1rem;">v0.01</span>
+    </h1>
+    <h2>Overview</h2>
+    <p>Coolscript MVC is a lightweight PHP MVC framework with route-based routing, template/layout system, Bootstrap 5 integration, and easy configuration.</p>
+    <hr>
+    <h2>Directory Structure</h2>
+    <pre>
+App/
+  Controllers/      # Application controllers
+  Views/            # View templates (with template.php or layout.php support per directory)
+  Config/           # Configuration files (settings.php, routes.php, database.php)
+System/
+  Autoloader.php    # PSR-4 style autoloader for App and System namespaces
+  Core/
+    Router.php      # Route registration and dispatching from routes.php
+    Render.php      # View rendering with automatic template/layout detection
+    Init.php        # Framework initialization
+  Database/
+    Database.php    # Database connection class (optional)
+  Security/
+    Session.php     # Session handler
+    Csrf.php        # CSRF protection (if implemented)
+  Middleware/
+    Middleware.php  # Middleware system (if implemented)
+  Logging/
+    ErrorLogger.php # Error logging (if implemented)
+  Helpers/
+    Url.php         # URL helper class (if implemented)
+    Form.php        # Form helper class (if implemented)
+    Redirect.php    # Redirect helper class (if implemented)
+Public/
+  index.php         # Front controller
+  .htaccess         # Apache rewrite rules for clean URLs
+  assets/           # CSS, JS files (Bootstrap 5)
+Documentation/
+  readme.html       # This documentation
+  install.html      # Installation guide
+  features.html     # Feature list
+    </pre>
+    <hr>
+    <h2>Features</h2>
+    <ul>
+        <li><strong>Route-Based Routing:</strong> All routes are defined in <code>App/Config/routes.php</code>.</li>
+        <li><strong>Template/Layout System:</strong> Automatic template detection - checks for subdirectory template.php/layout.php first, then falls back to global template.php/layout.php.</li>
+        <li><strong>Controllers:</strong> Extend <code>System\Core\Render</code> for view rendering with automatic template wrapping.</li>
+        <li><strong>Views:</strong> Located in <code>App/Views/</code>, supports subdirectories with their own templates.</li>
+        <li><strong>Configuration:</strong> <code>settings.php</code> for framework options, <code>routes.php</code> for route definitions, <code>database.php</code> for DB credentials (optional).</li>
+        <li><strong>Bootstrap 5:</strong> Pre-integrated for rapid UI development.</li>
+        <li><strong>Autoloading:</strong> PSR-4 style for both <code>App\</code> and <code>System\</code> namespaces.</li>
+        <li><strong>Public Access:</strong> Only <code>Public/</code> is web-accessible. All other files are protected.</li>
+        <li><strong>404 Handling:</strong> Automatic fallback to 404.php view for missing views.</li>
+    </ul>
+    <hr>
+    <h2>Template/Layout System</h2>
+    <p>The framework automatically detects and uses templates:</p>
+    <ul>
+        <li>For view <code>user/dashboard</code>, it checks <code>App/Views/user/template.php</code> or <code>App/Views/user/layout.php</code> first.</li>
+        <li>If not found, falls back to <code>App/Views/template.php</code> or <code>App/Views/layout.php</code>.</li>
+        <li>If no template exists, the view is rendered without a template.</li>
+        <li>The view content is available as <code>$viewContent</code> variable in the template.</li>
+    </ul>
+    <hr>
+    <h2>Configuration Options</h2>
+    <ul>
+        <li><code>version</code>: Framework version number.</li>
+        <li><code>app_name</code>: The name of your application.</li>
+        <li><code>base_url</code>: The base URL of your site.</li>
+        <li><code>default_controller</code>: The default controller (currently not used with route-based system).</li>
+        <li><code>csrf_enabled</code>: Enable CSRF protection (<code>true</code>/<code>false</code>).</li>
+        <li><code>force_https</code>: Enforce HTTPS (<code>true</code>/<code>false</code>).</li>
+        <li><code>session_handler</code>: Session mode: <code>cookie</code> or <code>sql</code>.</li>
+        <li><code>debug</code>: Debug mode (<code>true</code>/<code>false</code>).</li>
+        <li><code>session_timeout</code>: Session lifetime in seconds.</li>
+        <li><code>session_gc_probability</code>: Session garbage collection probability numerator.</li>
+        <li><code>session_gc_divisor</code>: Session garbage collection probability denominator.</li>
+        <li><code>logging_enabled</code>: Enable request logging.</li>
+        <li><code>error_logging_enabled</code>: Enable error logging.</li>
+    </ul>
+    <hr>
+    <h2>Routes Configuration</h2>
+    <p>Routes are defined in <code>App/Config/routes.php</code> as an array:</p>
+    <pre>
+return [
+    ['GET', '/', ['App\Controllers\HomeController', 'index']],
+    ['POST', '/contact', ['App\Controllers\ContactController', 'submit']],
+    // Add more routes...
+];
+    </pre>
+    <p>Each route is: <code>[HTTP_METHOD, 'path', [ControllerClass, 'method']]</code></p>
+    <hr>
+    <h2>How to Use</h2>
+    <ol>
+        <li>Place your controllers in <code>App/Controllers/</code>, extending <code>System\Core\Render</code>.</li>
+        <li>Add views in <code>App/Views/</code>.</li>
+        <li>Define routes in <code>App/Config/routes.php</code>.</li>
+        <li>Configure settings in <code>App/Config/settings.php</code>.</li>
+        <li>Access your site via <code>Public/index.php</code>.</li>
+    </ol>
+    <hr>
+    <h2>Example Controller</h2>
+    <pre>
+&lt;?php
+namespace App\Controllers;
+
+use System\Core\Render;
+
+class HomeController extends Render
+{
+    public function index()
+    {
+        $data = ['title' => 'Welcome'];
+        echo $this-&gt;renderView('home', $data);
+    }
+}
+    </pre>
+    <hr>
+    <h2>Example View Structure</h2>
+    <ul>
+        <li><code>App/Views/template.php</code> - Global template (with $viewContent variable)</li>
+        <li><code>App/Views/home.php</code> - Home view content</li>
+        <li><code>App/Views/user/template.php</code> - User section template (optional)</li>
+        <li><code>App/Views/user/dashboard.php</code> - User dashboard view</li>
+    </ul>
+    <hr>
+    <h2>License</h2>
+    <p>This framework is provided as-is for educational and development use.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coolscript MVC Feature List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h1 class="mb-4">Feature List</h1>
+    <ul>
+        <li><strong>Route-Based System:</strong> All routes defined in <code>routes.php</code></li>
+        <li><strong>Automatic Template Detection:</strong> Checks for subdirectory templates first, then global template</li>
+        <li><strong>Bootstrap 5 Integration:</strong> Pre-configured for rapid development</li>
+        <li><strong>PSR-4 Autoloading:</strong> For App and System namespaces</li>
+        <li><strong>View Rendering:</strong> Automatic template/layout wrapping with <code>$viewContent</code> variable</li>
+        <li><strong>404 Fallback:</strong> Automatic fallback to 404.php for missing views</li>
+        <li><strong>Configuration System:</strong> Centralized settings in <code>settings.php</code></li>
+        <li><strong>Database Support:</strong> Optional database configuration</li>
+        <li><strong>Clean URLs:</strong> Via .htaccess URL rewriting</li>
+        <li><strong>Secure Access:</strong> Only public folder is web-accessible</li>
+    </ul>
+    <hr>
+    <h2>Framework Structure</h2>
+    <ul>
+        <li><strong>Controllers:</strong> Handle business logic, extend <code>System\Core\Render</code></li>
+        <li><strong>Views:</strong> Template files with optional subdirectory-specific layouts</li>
+        <li><strong>Routes:</strong> Centralized route definitions</li>
+        <li><strong>Configuration:</strong> Separate files for settings, routes, and database</li>
+    </ul>
+    <hr>
+    <p>See <a href="install.html">Installation Guide</a> and <a href="readme.html">Main Documentation</a> for details.</p>
+</div>
+</body>
+</html>

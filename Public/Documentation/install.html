@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coolscript MVC Installation Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h1 class="mb-4">Installation Guide</h1>
+    <ol>
+        <li>
+            <strong>Requirements:</strong>
+            <ul>
+                <li>PHP 8.2 or newer</li>
+                <li>MySQL (optional, only if using database features)</li>
+                <li>Apache with mod_rewrite (for clean URLs)</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Setup:</strong>
+            <ul>
+                <li>Clone or extract the framework files into your project directory.</li>
+                <li>Set your web server's document root to the <code>public/</code> folder.</li>
+                <li>Ensure <code>public/.htaccess</code> is present for URL rewriting.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Configuration:</strong>
+            <ul>
+                <li>Edit <code>app/config/settings.php</code> for your application settings.</li>
+                <li>Define your routes in <code>app/config/routes.php</code>.</li>
+                <li>If using database, edit <code>app/config/database.php</code> with your credentials.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Creating Controllers:</strong>
+            <ul>
+                <li>Add controllers to <code>app/Controllers/</code> extending <code>System\Core\Render</code>.</li>
+                <li>Define routes for your controllers in <code>routes.php</code>.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Creating Views:</strong>
+            <ul>
+                <li>Add views to <code>app/Views/</code>.</li>
+                <li>Optionally create subdirectory-specific templates (e.g., <code>app/Views/user/template.php</code>).</li>
+                <li>Create a global template at <code>app/Views/template.php</code> or <code>app/Views/layout.php</code>.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Template System:</strong>
+            <ul>
+                <li>Framework automatically detects templates in this order:</li>
+                <li>1. <code>app/Views/{subdirectory}/template.php</code></li>
+                <li>2. <code>app/Views/{subdirectory}/layout.php</code></li>
+                <li>3. <code>app/Views/template.php</code></li>
+                <li>4. <code>app/Views/layout.php</code></li>
+                <li>View content is available as <code>$viewContent</code> in the template.</li>
+            </ul>
+        </li>
+    </ol>
+    <hr>
+    <p>For more details, see <a href="features.html">Feature List</a> and <a href="readme.html">Main Documentation</a>.</p>
+</div>
+</body>
+</html>

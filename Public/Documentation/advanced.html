@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coolscript MVC Advanced Features</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        code { color: #d63384; }
+        .section { margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+<div class="container my-5">
+    <h1 class="mb-4">Advanced Features & Usage</h1>
+    <p class="lead">Learn how to use CSRF protection, helpers, middleware, and other advanced features in Coolscript MVC.</p>
+    <hr>
+
+    <!-- CSRF Protection -->
+    <div class="section">
+        <h2>🔒 CSRF Protection</h2>
+        <p>CSRF (Cross-Site Request Forgery) protection helps secure your forms against malicious attacks.</p>
+        
+        <h4>Enable CSRF</h4>
+        <p>Edit <code>App/Config/settings.php</code>:</p>
+        <pre><code>&lt;?php
+return [
+    'csrf_enabled' => true,
+    // ...other settings
+];</code></pre>
+
+        <h4>Using CSRF in Forms</h4>
+        <p>Use the <code>Form</code> helper to automatically add CSRF tokens:</p>
+        <pre><code>&lt;?php
+use System\Helpers\Form;
+
+// In your view:
+echo Form::open('/submit', 'post');
+?&gt;
+    &lt;input type="text" name="username" required&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;?php
+echo Form::close();</code></pre>
+
+        <h4>Manual CSRF Token Generation</h4>
+        <pre><code>&lt;?php
+use System\Security\Csrf;
+
+// Generate token
+$token = Csrf::generateToken();
+
+// In your form:
+?&gt;
+&lt;form method="post" action="/submit"&gt;
+    &lt;input type="hidden" name="csrf_token" value="&lt;?= $token ?&gt;"&gt;
+    &lt;!-- form fields --&gt;
+&lt;/form&gt;</code></pre>
+
+        <h4>CSRF Validation</h4>
+        <p>The framework automatically validates CSRF tokens for POST requests when enabled. Manual validation:</p>
+        <pre><code>&lt;?php
+use System\Security\Csrf;
+
+$token = $_POST['csrf_token'] ?? '';
+if (!Csrf::validateToken($token)) {
+    die('CSRF validation failed');
+}</code></pre>
+    </div>
+
+    <!-- URL Helper -->
+    <div class="section">
+        <h2>🔗 URL Helper</h2>
+        <p>The <code>Url</code> helper provides convenient methods for working with URLs.</p>
+
+        <h4>Available Methods</h4>
+        <pre><code>&lt;?php
+use System\Helpers\Url;
+
+// Get base URL
+$base = Url::base();
+// Returns: https://yoursite.com
+
+// Generate full URL
+$url = Url::to('/products/123');
+// Returns: https://yoursite.com/products/123
+
+// Get current URL
+$current = Url::current();
+// Returns: /current/path
+
+// Get asset URL
+$css = Url::asset('/assets/css/style.css');
+// Returns: https://yoursite.com/assets/css/style.css</code></pre>
+
+        <h4>Usage in Views</h4>
+        <pre><code>&lt;?php use System\Helpers\Url; ?&gt;
+
+&lt;!-- Link to route --&gt;
+&lt;a href="&lt;?= Url::to('/about') ?&gt;"&gt;About Us&lt;/a&gt;
+
+&lt;!-- Asset URLs --&gt;
+&lt;link rel="stylesheet" href="&lt;?= Url::asset('/assets/css/style.css') ?&gt;"&gt;
+&lt;script src="&lt;?= Url::asset('/assets/js/app.js') ?&gt;"&gt;&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Form Helper -->
+    <div class="section">
+        <h2>📝 Form Helper</h2>
+        <p>Simplify form creation with automatic CSRF protection.</p>
+
+        <h4>Basic Usage</h4>
+        <pre><code>&lt;?php
+use System\Helpers\Form;
+
+// Open form (CSRF token auto-added if enabled)
+echo Form::open('/contact', 'post', ['class' => 'contact-form']);
+?&gt;
+    &lt;div class="mb-3"&gt;
+        &lt;label&gt;Name&lt;/label&gt;
+        &lt;input type="text" name="name" class="form-control"&gt;
+    &lt;/div&gt;
+    &lt;button type="submit" class="btn btn-primary"&gt;Send&lt;/button&gt;
+&lt;?php
+echo Form::close();</code></pre>
+
+        <h4>With Custom Attributes</h4>
+        <pre><code>&lt;?php
+echo Form::open('/upload', 'post', [
+    'enctype' => 'multipart/form-data',
+    'class' => 'upload-form',
+    'id' => 'fileUploadForm'
+]);</code></pre>
+    </div>
+
+    <!-- Redirect Helper -->
+    <div class="section">
+        <h2>↪️ Redirect Helper</h2>
+        <p>The <code>Redirect</code> helper provides easy redirection methods.</p>
+
+        <h4>Usage in Controllers</h4>
+        <pre><code>&lt;?php
+namespace App\Controllers;
+
+use System\Core\Render;
+use System\Helpers\Redirect;
+
+class UserController extends Render
+{
+    public function login()
+    {
+        // Process login...
+        if ($loginSuccess) {
+            Redirect::to('/dashboard');
+        } else {
+            Redirect::back();
+        }
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        Redirect::to('/');
+    }
+}</code></pre>
+    </div>
+
+    <!-- Sessions -->
+    <div class="section">
+        <h2>💾 Session Management</h2>
+        <p>Coolscript MVC supports cookie-based and database-backed sessions.</p>
+
+        <h4>Configure Session Handler</h4>
+        <p>Edit <code>App/Config/settings.php</code>:</p>
+        <pre><code>&lt;?php
+return [
+    'session_handler' => 'cookie', // or 'sql'
+    'session_timeout' => 1440, // 24 minutes
+    // ...
+];</code></pre>
+
+        <h4>Using Sessions</h4>
+        <pre><code>&lt;?php
+// Set session data
+$_SESSION['user_id'] = 123;
+$_SESSION['username'] = 'john_doe';
+
+// Get session data
+$userId = $_SESSION['user_id'] ?? null;
+
+// Check if logged in
+if (isset($_SESSION['user_id'])) {
+    echo "Welcome, " . $_SESSION['username'];
+}
+
+// Destroy session
+session_destroy();</code></pre>
+
+        <h4>Database Sessions</h4>
+        <p>When using <code>'session_handler' => 'sql'</code>, configure database credentials in <code>App/Config/database.php</code>:</p>
+        <pre><code>&lt;?php
+return [
+    'host' => 'localhost',
+    'user' => 'your_db_user',
+    'pass' => 'your_db_password',
+    'db'   => 'your_database_name',
+];</code></pre>
+        <p>The framework automatically creates a <code>sessions</code> table.</p>
+    </div>
+
+    <!-- Middleware -->
+    <div class="section">
+        <h2>🛡️ Middleware</h2>
+        <p>Middleware allows you to filter HTTP requests before they reach your controllers.</p>
+
+        <h4>Creating Custom Middleware</h4>
+        <p>Edit <code>System/Middleware/Middleware.php</code> or register in <code>Public/index.php</code>:</p>
+        <pre><code>&lt;?php
+use System\Middleware\Middleware;
+
+// Custom auth middleware
+Middleware::register(function() {
+    $url = $_SERVER['REQUEST_URI'] ?? '/';
+    
+    // Protect /admin routes
+    if (strpos($url, '/admin') === 0) {
+        if (empty($_SESSION['is_admin'])) {
+            header('Location: /login');
+            return false; // Stop execution
+        }
+    }
+    
+    return true; // Continue
+});</code></pre>
+
+        <h4>Example: Logging Middleware</h4>
+        <pre><code>&lt;?php
+Middleware::register(function() {
+    $log = sprintf(
+        "[%s] %s %s from %s\n",
+        date('Y-m-d H:i:s'),
+        $_SERVER['REQUEST_METHOD'],
+        $_SERVER['REQUEST_URI'],
+        $_SERVER['REMOTE_ADDR']
+    );
+    
+    file_put_contents(__DIR__ . '/../App/Logs/access.log', $log, FILE_APPEND);
+    return true;
+});</code></pre>
+    </div>
+
+    <!-- Error Logging -->
+    <div class="section">
+        <h2>📊 Error Logging</h2>
+        <p>Track errors and requests automatically.</p>
+
+        <h4>Enable Logging</h4>
+        <p>Edit <code>App/Config/settings.php</code>:</p>
+        <pre><code>&lt;?php
+return [
+    'error_logging_enabled' => true,
+    'logging_enabled' => true,
+    // ...
+];</code></pre>
+
+        <h4>Manual Logging</h4>
+        <pre><code>&lt;?php
+use System\Logging\ErrorLogger;
+
+// Log a custom request
+ErrorLogger::logRequest('GET', '/api/users', 200, 'Success');
+
+// Logs are saved in: App/Logs/error.log</code></pre>
+    </div>
+
+    <!-- Database Usage -->
+    <div class="section">
+        <h2>🗄️ Database Usage</h2>
+        <p>Access the database using the <code>Database</code> class.</p>
+
+        <h4>Configuration</h4>
+        <p>Edit <code>App/Config/database.php</code>:</p>
+        <pre><code>&lt;?php
+return [
+    'host' => 'localhost',
+    'user' => 'root',
+    'pass' => 'password',
+    'db'   => 'my_database',
+];</code></pre>
+
+        <h4>Using Database in Controllers</h4>
+        <pre><code>&lt;?php
+namespace App\Controllers;
+
+use System\Core\Render;
+use System\Database\Database;
+
+class UserController extends Render
+{
+    public function list()
+    {
+        $db = Database::getInstance();
+        
+        // Query database
+        $result = $db->query("SELECT * FROM users");
+        
+        $users = [];
+        while ($row = $result->fetch_assoc()) {
+            $users[] = $row;
+        }
+        
+        return $this->render('users/list', ['users' => $users]);
+    }
+    
+    public function create()
+    {
+        $db = Database::getInstance();
+        $name = $db->real_escape_string($_POST['name']);
+        
+        $db->query("INSERT INTO users (name) VALUES ('$name')");
+        
+        header('Location: /users');
+    }
+}</code></pre>
+    </div>
+
+    <!-- Route Parameters -->
+    <div class="section">
+        <h2>🎯 Route Parameters</h2>
+        <p>Define dynamic routes with parameters.</p>
+
+        <h4>Numeric Parameters</h4>
+        <p>Edit <code>App/Config/routes.php</code>:</p>
+        <pre><code>&lt;?php
+return [
+    ['GET', '/user/(:num)', ['App\Controllers\UserController', 'show']],
+    ['GET', '/product/(:num)', ['App\Controllers\ProductController', 'detail']],
+];</code></pre>
+
+        <h4>Controller Method</h4>
+        <pre><code>&lt;?php
+namespace App\Controllers;
+
+use System\Core\Render;
+
+class UserController extends Render
+{
+    public function show($id)
+    {
+        // $id contains the numeric parameter
+        return $this->render('user/profile', ['userId' => $id]);
+    }
+}</code></pre>
+
+        <h4>String Parameters</h4>
+        <pre><code>&lt;?php
+// In routes.php
+['GET', '/category/(:any)', ['App\Controllers\CategoryController', 'show']],
+
+// In controller
+public function show($slug)
+{
+    return $this->render('category/view', ['slug' => $slug]);
+}</code></pre>
+    </div>
+
+    <!-- Navigation -->
+    <hr>
+    <div class="mt-4">
+        <h4>Related Documentation</h4>
+        <ul>
+            <li><a href="readme.html">Main Documentation</a></li>
+            <li><a href="install.html">Installation Guide</a></li>
+            <li><a href="features.html">Feature List</a></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
